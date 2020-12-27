@@ -22,3 +22,36 @@ connection.connect(function(err) {
   // run the start function after the connection is made to prompt the user
   start();
 });
+
+function start() {
+    inquirer
+      .prompt({
+        name: "start",
+        type: "list",
+        message: "What would you like to do?",
+        choices: [
+            "View All Employees", 
+            "View All Departments", 
+            "View All Roles",
+            "Add Employee",
+            "Add Department",
+            "Add Role",
+            "Remove Employee", 
+            "Remove Department",
+            "Remove Role",
+            "Update Employee Role", 
+            "Update Employee Manager"
+        ]
+      })
+      .then(function(answer) {
+        // based on their answer, either call the bid or the post functions
+        if (answer.postOrBid === "POST") {
+          postAuction();
+        }
+        else if(answer.postOrBid === "BID") {
+          bidAuction();
+        } else{
+          connection.end();
+        }
+      });
+  }
