@@ -42,16 +42,65 @@ function start() {
             "Update Employee Role", 
             "Update Employee Manager"
         ]
-      })
-      .then(function(answer) {
-        // based on their answer, either call the bid or the post functions
-        if (answer.postOrBid === "POST") {
-          postAuction();
+      }).then(function(answer) {
+        switch (answer.start){
+            case "View All Employees":
+            viewAllEmployees()
+            break
+
+            case "View All Departments":
+            viewAllDepartments()
+            break
+
+            case "View All Roles":
+            viewAllRoles()
+            break
+
+            case "Add Employee":
+            addEmployee()
+            break
+
+            case "Add Department":
+            addDepartment()
+            break
+
+            case "Add Role":
+            addRole()
+            break
+
+            case "Remove Employee":
+            removeEmployee()
+            break
+            
+            case"Remove Department":
+            removeDepartment()
+            break
+
+            case "Remove Role":
+            removeRole()
+            break
+
+            case "Update Employee Role":
+            updateEmployeeRole()
+            break
+
+            case "Update Employee Manager":
+            updateEmployeeManager()
+            break
         }
-        else if(answer.postOrBid === "BID") {
-          bidAuction();
-        } else{
-          connection.end();
-        }
-      });
+    })
   }
+
+  function viewAllEmployees(){
+        connection.query(
+            `SELECT 
+            CONCAT(e.first_name," ", e.last_name) AS 'employee', title, salary, CONCAT(m.first_name," ",m.last_name) AS manager
+            FROM
+                employee e
+            INNER JOIN employee m ON m.id = e.manager_id LEFT JOIN role on e.role_id = role.id ORDER BY manager; `, function(err,res){
+                    if (err) throw err
+                    console.table(res)
+                    start()
+        })       
+  }
+                
