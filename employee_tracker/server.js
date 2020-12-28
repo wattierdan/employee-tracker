@@ -156,6 +156,44 @@ function start() {
       }) 
   }
 
+  const roleQuestions = [
+    {
+      name:"role_title",
+      type: "input",
+      message: "What is the title of the role you would like to add?"
+    },
+    {
+      name:"role_salary",
+      type: "number",
+      message: "What is the salary for this role?"
+    },
+    {
+      name:"department_id",
+      type: "number",
+      message: "What is the department Id for this role?"
+    }
+  ]  
+
+  function addRole() {
+    inquirer
+      .prompt(roleQuestions)
+  
+      .then(function(answer) {
+        if (answer.add_role !== ''){
+          connection.query(`INSERT INTO employee_tracker_db.role (title, salary, department_id)
+          VALUES ("${answer.role_title}",${answer.role_salary},${answer.department_id})`, function(err){
+            if (err) throw err
+            console.log(`adding ${answer.role_title} into Role database`)
+            start()
+          })
+        } else {
+            console.log('Please enter a valid Role name.')
+            addRole()
+        }
+      }) 
+
+  }
+
   
   
   
