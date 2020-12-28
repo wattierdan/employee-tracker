@@ -1,25 +1,21 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
-// create the connection information for the sql database
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
+
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "Edwink1225",
   database: "employee_tracker_db"
 });
 
-// connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-  // run the start function after the connection is made to prompt the user
+
   start();
 });
 
@@ -42,7 +38,9 @@ function start() {
             "Update Employee Role", 
             "Update Employee Manager"
         ]
-      }).then(function(answer) {
+      })
+      
+      .then(function(answer) {
         switch (answer.start){
             case "View All Employees":
             viewAllEmployees()
@@ -94,13 +92,73 @@ function start() {
   function viewAllEmployees(){
         connection.query(
             `SELECT 
-            CONCAT(e.first_name," ", e.last_name) AS 'employee', title, salary, CONCAT(m.first_name," ",m.last_name) AS manager
-            FROM
+                CONCAT(e.first_name," ", e.last_name) 
+                AS 'employee', title, salary, 
+                CONCAT(m.first_name," ",m.last_name) 
+                AS manager
+                FROM
                 employee e
-            INNER JOIN employee m ON m.id = e.manager_id LEFT JOIN role on e.role_id = role.id ORDER BY manager; `, function(err,res){
+                INNER JOIN employee m ON m.id = e.manager_id 
+                LEFT JOIN role on e.role_id = role.id 
+                ORDER BY manager; `, function(err,res){
                     if (err) throw err
                     console.table(res)
                     start()
         })       
   }
-                
+
+  const departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
+
+  function viewAllDepartments(){
+    inquirer
+      .prompt({
+        name: "departments",
+        type: "list",
+        message: "Select a Department",
+        choices: departments
+      })
+      
+      .then(function() {
+        connection.query(
+        `SELECT `, function(err,res){
+          if (err) throw err
+          console.table(res)
+          start()
+        })
+    })
+  }
+    
+  
+  
+  
+
+  function addDepartment(){
+    inquirer
+      .prompt({
+        name:"add_department",
+        type: "input",
+        message: "What is the name of the department you would like to add?"
+      })
+      
+      .then(function(answer) {
+        if (answer.add_department !== ''){
+          connection.query(`INSERT INTO employee_tracker_db.department (name)
+          VALUES ("${answer.add_department}")`, function(err){
+            if (err) throw err
+            console.log(`adding ${answer.add_department} into department database`)
+            departments.push(answer.add_department)
+            start()
+          })
+        } else {
+            console.log('Please enter a valid department name.')
+            addDepartment()
+        }
+      }) 
+  }
+
+  
+  
+  
+
+
+
