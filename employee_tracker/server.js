@@ -108,26 +108,54 @@ function start() {
   }
 
   const departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
+  var changethislater = ""
+  var anotherId = ""
 
   function viewAllDepartments(){
     inquirer
       .prompt({
         name: "departments",
         type: "list",
-        message: "Select a Department",
+        message: "Select a Department to view all Employees",
         choices: departments
       })
-      
-      .then(function() {
+      .then(function getIdNum(answer) {
+        console.log(`Please wait your employee list for the ${answer.departments} department is being generated...`)
         connection.query(
-        `SELECT `, function(err,res){
-          if (err) throw err
-          console.table(res)
-          start()
+          `SELECT id FROM employee_tracker_db.department WHERE name = "${answer.departments}";`, function(err,res){
+                  if (err) throw err
+                  changethislater = res[0].id
+                  return changethislater      
         })
-    })
+        setTimeout(function(){
+          connection.query(
+            `SELECT id FROM employee_tracker_db.role WHERE department_id = "${changethislater}";`, function(err,res){
+                  if (err) throw err
+                  anotherId = res[0].id
+                  return anotherId
+          })
+        },3000)
+        setTimeout(function(){
+          connection.query(
+            `SELECT *
+             FROM employee_tracker_db.employee WHERE role_id = "${anotherId}";`, function(err,res){
+                  if (err) throw err
+                  console.table(res)     
+          })
+        },6000)
+        setTimeout(function(){
+          start()
+        },6100)
+      })
+      
+      
   }
-    
+  
+
+ 
+
+  
+  
   
   
   
