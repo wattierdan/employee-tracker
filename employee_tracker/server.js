@@ -134,7 +134,7 @@ function start() {
                   anotherId = res[0].id
                   return anotherId
           })
-        },3000)
+        },2000)
         setTimeout(function(){
           connection.query(
             `SELECT *
@@ -142,14 +142,46 @@ function start() {
                   if (err) throw err
                   console.table(res)     
           })
-        },6000)
+        },3000)
         setTimeout(function(){
           start()
         },6100)
-      })
-      
-      
+      }) 
   }
+
+  const roles = ["President of Librarians", "Doctor", "Project Manager", "Dog Trainer", "Janitor"]
+
+  function viewAllRoles() {
+    inquirer
+      .prompt({
+        name: "roles",
+        type: "list",
+        message: "Select a Role to view all Employees",
+        choices: roles
+      })
+      .then(function getIdNum(answer) {
+        console.log(`Please wait your employee list for the ${answer.roles} role is being generated...`)
+        connection.query(
+          `SELECT id FROM employee_tracker_db.role WHERE title = "${answer.roles}";`, function(err,res){
+                  if (err) throw err
+                  changethislater = res[0].id
+                  console.log(changethislater)
+                  return changethislater      
+        })
+        setTimeout(function(){
+          connection.query(
+            `SELECT * FROM employee_tracker_db.employee WHERE role_id = "${changethislater}";`, function(err,res){
+                  if (err) throw err
+                  console.table(res) 
+          })
+        },2000)
+        setTimeout(function(){
+          start()
+        },6100)
+      }) 
+  }
+
+
   
 
  
