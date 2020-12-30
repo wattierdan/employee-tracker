@@ -107,7 +107,11 @@ function start() {
         })       
   }
 
+
+  //array of departments
   const departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
+
+  //vars to temp hold a response
   var changethislater = ""
   var anotherId = ""
 
@@ -116,7 +120,7 @@ function start() {
       .prompt({
         name: "departments",
         type: "list",
-        message: "Select a Department to view all Employees",
+        message: "Select the Department you wish to view all Employees for.",
         choices: departments
       })
       .then(function getIdNum(answer) {
@@ -149,6 +153,7 @@ function start() {
       }) 
   }
 
+  //array of roles
   const roles = ["President of Librarians", "Doctor", "Project Manager", "Dog Trainer", "Janitor"]
 
   function viewAllRoles() {
@@ -156,7 +161,7 @@ function start() {
       .prompt({
         name: "roles",
         type: "list",
-        message: "Select a Role to view all Employees",
+        message: "Select the Role you wish to view all Employees for.",
         choices: roles
       })
       .then(function getIdNum(answer) {
@@ -181,18 +186,11 @@ function start() {
       }) 
   }
 
+  function addEmployee() {
 
-  
+  }
 
- 
-
-  
-  
-  
-  
-  
-
-  function addDepartment(){
+  function addDepartment() {
     inquirer
       .prompt({
         name:"add_department",
@@ -216,6 +214,7 @@ function start() {
       }) 
   }
 
+  //array of questions for addRole function
   const roleQuestions = [
     {
       name:"role_title",
@@ -244,6 +243,7 @@ function start() {
           VALUES ("${answer.role_title}",${answer.role_salary},${answer.department_id})`, function(err){
             if (err) throw err
             console.log(`adding ${answer.role_title} into Role database`)
+            roles.push(answer.role_title)
             start()
           })
         } else {
