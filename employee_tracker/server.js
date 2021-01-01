@@ -99,10 +99,10 @@ function start() {
 }
 
   //array of departments
-  const departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
+  let departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
 
   //array of roles
-  const roles = ["President of Librarians", "Doctor", "Project Manager", "Dog Trainer", "Janitor"]
+  let roles = ["President of Librarians", "Doctor", "Project Manager", "Dog Trainer", "Janitor"]
 
   //vars to temp hold a response
   var changethislater = ""
@@ -327,7 +327,26 @@ function start() {
   }
 
   function removeDepartment() {
-
+    inquirer
+      .prompt({
+        name:"remove_department",
+        type: "input",
+        message: "What is the name of the department you would like to remove?"
+      })
+      
+      .then(function(answer) {
+        if (answer.remove_department !== ''){
+          connection.query(`DELETE FROM employee_tracker_db.department WHERE name = "${answer.remove_department};`, function(err){
+            if (err) throw err
+            console.log(`Removing ${answer.remove_department} into the Department database`)
+            let departments = departments.filter(a => a !== `'${answer.remove_department}'`)
+            start()
+          })
+        } else {
+            console.log('Please enter a valid Dempartment name.')
+            removeDepartment()
+        }
+      })
   }
 
   function removeRole() {
