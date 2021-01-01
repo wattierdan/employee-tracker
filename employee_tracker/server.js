@@ -318,11 +318,11 @@ function start() {
   function removeEmployee() {
     inquirer
       .prompt(removeEmployeeQuestions)
-
-     .then (function(answer) { 
-      console.log(`Deleting ${answer.first_name} ${answer.last_name} from the Employee database`)
-      connection.query(`DELETE FROM employee_tracker_db.employee WHERE first_name = "${answer.first_name}" AND last_name = "${answer.last_name}";`)
-      start()
+      
+      .then (function(answer) { 
+        console.log(`Deleting ${answer.first_name} ${answer.last_name} from the Employee database`)
+        connection.query(`DELETE FROM employee_tracker_db.employee WHERE first_name = "${answer.first_name}" AND last_name = "${answer.last_name}";`)
+        start()
       })
   }
 
