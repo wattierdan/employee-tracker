@@ -151,6 +151,19 @@ function start() {
     }
   ]  
 
+  const removeEmployeeQuestions = [
+    {
+      name:"first_name",
+      type: "input",
+      message:"What is the first name of the Employee you would like to remove?"
+    },
+    {
+      name:"last_name",
+      type: "input",
+      message:"What is the last name of the Employee you would like to remove?"
+    }
+  ]
+
   function viewAllEmployees(){
     console.log(`Please wait your employee list is being generated...`)
     setTimeout(function(){
@@ -246,7 +259,7 @@ function start() {
       .then(function(answer) {
         if (answer.add_role !== ''){
           connection.query(`INSERT INTO employee_tracker_db.employee (first_name, last_name, role_id, manager_id)
-          VALUES ("${answer.first_name}",${answer.last_name},${answer.role_id},${answer.manager_id})`, function(err){
+          VALUES ("${answer.first_name}","${answer.last_name}",${answer.role_id},${answer.manager_id})`, function(err){
             if (err) throw err
             console.log(`adding ${answer.first_name} ${answer.last_name} into Role database`)
             start()
@@ -303,7 +316,14 @@ function start() {
   }
 
   function removeEmployee() {
+    inquirer
+      .prompt(removeEmployeeQuestions)
 
+     .then (function(answer) { 
+      console.log(`Deleting ${answer.first_name} ${answer.last_name} from the Employee database`)
+      connection.query(`DELETE FROM employee_tracker_db.employee WHERE first_name = "${answer.first_name}" AND last_name = "${answer.last_name}";`)
+      start()
+      })
   }
 
   function removeDepartment() {
