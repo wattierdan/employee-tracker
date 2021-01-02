@@ -15,89 +15,88 @@ connection.connect(function(err) {
   start()
 });
 
-function start() {
-  setTimeout(function() {
-    console.log("---------------------------------------------------")
-    inquirer
-      .prompt({
-        name: "start",
-        type: "list",
-        message: "What would you like to do?",
-        choices: [
-            "View All Employees", 
-            "View All Departments", 
-            "View All Roles",
-            //"View All Employees by Manager",
-            "Add Employee",
-            "Add Department",
-            "Add Role",
-            //"Remove Employee", 
-            //"Remove Department",
-            //"Remove Role",
-            "Update Employee Role", 
-            //"Update Employee Manager",
-            "----Exit----"
-        ]
+  function start() {
+    setTimeout(function() {
+      console.log("---------------------------------------------------")
+      inquirer
+        .prompt({
+          name: "start",
+          type: "list",
+          message: "What would you like to do?",
+          choices: [
+              "View All Employees", 
+              "View All Departments", 
+              "View All Roles",
+              //"View All Employees by Manager",
+              "Add Employee",
+              "Add Department",
+              "Add Role",
+              //"Remove Employee", 
+              //"Remove Department",
+              //"Remove Role",
+              "Update Employee Role", 
+              //"Update Employee Manager",
+              "----Exit----"
+          ]
+        })
+        .then(function(answer) {
+          switch (answer.start){
+              case "View All Employees":
+                viewAllEmployees()
+                break
+
+              case "View All Departments":
+                viewDepartments()
+                break
+
+              case "View All Roles":
+                viewRole()
+                break
+
+              // case "View All Employees by Manager":
+              //   viewbyManager()
+              //   break
+
+              case "Add Employee":
+                addEmployee()
+                break
+
+              case "Add Department":
+                addDepartment()
+                break
+
+              case "Add Role":
+                addRole()
+                break
+
+              // case "Remove Employee":
+              //   removeEmployee()
+              //   break
+              
+              // case"Remove Department":
+              //   removeDepartment()
+              //   break
+
+              // case "Remove Role":
+              //   removeRole()
+              //   break
+
+              case "Update Employee Role":
+                updateEmployeeRole()
+                break
+
+              // case "Update Employee Manager":
+              //   updateEmployeeManager()
+              //   break
+
+              case "----Exit----":
+                console.log("Goodbye...")
+                connection.end()
+                break
+          }
       })
-      .then(function(answer) {
-        switch (answer.start){
-            case "View All Employees":
-              viewAllEmployees()
-              break
-
-            case "View All Departments":
-              viewDepartments()
-              break
-
-            case "View All Roles":
-              viewRole()
-              break
-
-            // case "View All Employees by Manager":
-            //   viewbyManager()
-            //   break
-
-            case "Add Employee":
-              addEmployee()
-              break
-
-            case "Add Department":
-              addDepartment()
-              break
-
-            case "Add Role":
-              addRole()
-              break
-
-            // case "Remove Employee":
-            //   removeEmployee()
-            //   break
-            
-            // case"Remove Department":
-            //   removeDepartment()
-            //   break
-
-            // case "Remove Role":
-            //   removeRole()
-            //   break
-
-            case "Update Employee Role":
-              updateEmployeeRole()
-              break
-
-            // case "Update Employee Manager":
-            //   updateEmployeeManager()
-            //   break
-
-            case "----Exit----":
-              console.log("Goodbye...")
-              connection.end()
-              break
-        }
-    })
-  },1000)
-}
-
+    },1000)
+  }
 
   function viewAllEmployees(){
     console.log(`Please wait your employee list is being generated...`)
@@ -278,7 +277,30 @@ function start() {
   }
 
   function updateEmployeeRole() {
+    inquirer
+      .prompt([
+        {
+          name:"first_name",
+          type: "input",
+          message: "What is the first name of the Employee you would like to update?"
+        },
+        {
+          name:"last_name",
+          type: "input",
+          message: "What is the last name of the Employee you would like to update?"
+        },
+        {
+          name:"new_role",
+          type: "number",
+          message: "Please enter the Employees new Role ID number?"
+        }
+      ])
 
+      .then (function(answer) { 
+        console.log(`Updating ${answer.first_name} ${answer.last_name} Role ID number`)
+        connection.query(`UPDATE employee_tracker_db.employee SET role_id = ${answer.new_role} WHERE first_name = "${answer.first_name}" AND last_name = "${answer.last_name}";`)
+        start()
+      })
   }
 
   function updateEmployeeManager() {
