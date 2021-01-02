@@ -10,7 +10,10 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "schema":"mysql -u root -p < schemas.sql",
+    "seeds":"mysql -u root -p <seeds.sql"
   },
   "keywords": [],
   "author": "",
