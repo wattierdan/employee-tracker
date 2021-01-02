@@ -19,13 +19,15 @@
  
   If you don't already have Node.js go [download](https://nodejs.org) it. You will also need mysql, all the info for setting up mysql can be found [here](https://www.mysql.com).
   
-  type `npm install` in terminal to download dependencies and scripts.
+  In the terminal type:
   
-  type `npm run schema` to set up your employee database.
+  `npm install` in terminal to download dependencies and scripts.
   
-  type `npm run seeds` if you wish to use the placeholder employees, departments and positions.
+  `npm run schema` to set up your employee database.
   
-  Once all of that is out of the way just type `npm start` into your terminal and the application should start.
+  `npm run seeds` if you wish to use the placeholder employees, departments and positions.
+  
+  Once all of that is out of the way just use `npm start` to run the application.
   
 
   ## Usage 
