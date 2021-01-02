@@ -16,7 +16,7 @@ connection.connect(function(err) {
 });
 
 function start() {
-  setTimeout(function(){
+  setTimeout(function() {
     console.log("---------------------------------------------------")
     inquirer
       .prompt({
@@ -25,17 +25,17 @@ function start() {
         message: "What would you like to do?",
         choices: [
             "View All Employees", 
-            "View All Employees by Department", 
-            "View All Employees by Role",
-            "View All Employees by Manager",
+            "View All Departments", 
+            "View All Roles",
+            //"View All Employees by Manager",
             "Add Employee",
             "Add Department",
             "Add Role",
-            "Remove Employee", 
-            "Remove Department",
-            "Remove Role",
+            //"Remove Employee", 
+            //"Remove Department",
+            //"Remove Role",
             "Update Employee Role", 
-            "Update Employee Manager",
+            //"Update Employee Manager",
             "----Exit----"
         ]
       })
@@ -45,17 +45,17 @@ function start() {
               viewAllEmployees()
               break
 
-            case "View All Employees by Department":
-              viewByDepartments()
+            case "View All Departments":
+              viewDepartments()
               break
 
-            case "View All Employees by Role":
-              viewByRole()
+            case "View All Roles":
+              viewRole()
               break
 
-            case "View All Employees by Manager":
-              viewbyManager()
-              break
+            // case "View All Employees by Manager":
+            //   viewbyManager()
+            //   break
 
             case "Add Employee":
               addEmployee()
@@ -69,25 +69,25 @@ function start() {
               addRole()
               break
 
-            case "Remove Employee":
-              removeEmployee()
-              break
+            // case "Remove Employee":
+            //   removeEmployee()
+            //   break
             
-            case"Remove Department":
-              removeDepartment()
-              break
+            // case"Remove Department":
+            //   removeDepartment()
+            //   break
 
-            case "Remove Role":
-              removeRole()
-              break
+            // case "Remove Role":
+            //   removeRole()
+            //   break
 
             case "Update Employee Role":
               updateEmployeeRole()
               break
 
-            case "Update Employee Manager":
-              updateEmployeeManager()
-              break
+            // case "Update Employee Manager":
+            //   updateEmployeeManager()
+            //   break
 
             case "----Exit----":
               console.log("Goodbye...")
@@ -95,14 +95,8 @@ function start() {
               break
         }
     })
-  },3000)
+  },1000)
 }
-
-  //array of departments
-  let departments = ['Marketing', 'Finance', 'Operations Management', 'Human Resources', 'IT']
-
-  //array of roles
-  let roles = ["President of Librarians", "Doctor", "Project Manager", "Dog Trainer", "Janitor"]
 
   //vars to temp hold a response
   var changethislater = ""
@@ -166,86 +160,28 @@ function start() {
 
   function viewAllEmployees(){
     console.log(`Please wait your employee list is being generated...`)
-    setTimeout(function(){
       connection.query(
-          `SELECT 
-              CONCAT(e.first_name," ", e.last_name) 
-              AS 'employee', title, salary, 
-              CONCAT(m.first_name," ",m.last_name) 
-              AS manager
-              FROM
-              employee e
-              INNER JOIN employee m ON m.id = e.manager_id 
-              LEFT JOIN role on e.role_id = role.id 
-              ORDER BY manager; `, function(err,res){
+          `SELECT * FROM employee_tracker_db.employee `, function(err,res){
                   if (err) throw err
                   console.table(res)
       })       
-    },2000)
       start()
   }
 
-  function viewByDepartments(){
-    inquirer
-      .prompt({
-        name: "departments",
-        type: "list",
-        message: "Select the Department you wish to view all Employees for.",
-        choices: departments
-      })
-      .then(function getIdNum(answer) {
-        console.log(`Please wait your employee list for the ${answer.departments} department is being generated...`)
-        connection.query(
-          `SELECT id FROM employee_tracker_db.department WHERE name = "${answer.departments}";`, function(err,res){
-                  if (err) throw err
-                  changethislater = res[0].id
-                  return changethislater      
-        })
-        setTimeout(function(){
-          connection.query(
-            `SELECT id FROM employee_tracker_db.role WHERE department_id = "${changethislater}";`, function(err,res){
-                  if (err) throw err
-                  anotherId = res[0].id
-                  return anotherId
-          })
-        },1500)
-        setTimeout(function(){
-          connection.query(
-            `SELECT *
-             FROM employee_tracker_db.employee WHERE role_id = "${anotherId}";`, function(err,res){
-                  if (err) throw err
-                  console.table(res)     
-          })
-        },2000)
-        start()
-      }) 
+  function viewDepartments(){
+    connection.query(`SELECT * FROM employee_tracker_db.department;`, function(err,res){
+      if (err) throw err;
+      console.table(res);
+      start()
+    })
   }
 
-  function viewByRole() {
-    inquirer
-      .prompt({
-        name: "roles",
-        type: "list",
-        message: "Select the Role you wish to view all Employees for.",
-        choices: roles
-      })
-      .then(function getIdNum(answer) {
-        console.log(`Please wait your employee list for the ${answer.roles} role is being generated...`)
-        connection.query(
-          `SELECT id FROM employee_tracker_db.role WHERE title = "${answer.roles}";`, function(err,res){
-                  if (err) throw err
-                  changethislater = res[0].id
-                  return changethislater      
-        })
-        setTimeout(function(){
-          connection.query(
-            `SELECT * FROM employee_tracker_db.employee WHERE role_id = "${changethislater}";`, function(err,res){
-                  if (err) throw err
-                  console.table(res) 
-          })
-        },2000)
-        start()
-      }) 
+  function viewRole() {
+    connection.query(`SELECT * FROM employee_tracker_db.role;`, function(err,res){
+      if (err) throw err;
+      console.table(res);
+      start()
+    })
   }
 
   function viewbyManager() {
