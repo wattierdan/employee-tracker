@@ -98,65 +98,6 @@ function start() {
   },1000)
 }
 
-  //vars to temp hold a response
-  var changethislater = ""
-  var anotherId = ""
-
-  //array of questions for addRole function
-  const roleQuestions = [
-    {
-      name:"role_title",
-      type: "input",
-      message: "What is the title of the role you would like to add?"
-    },
-    {
-      name:"role_salary",
-      type: "number",
-      message: "What is the salary for this role?"
-    },
-    {
-      name:"department_id",
-      type: "number",
-      message: "What is the department Id for this role?"
-    }
-  ]  
-
-  //array of questions for addEmployee function
-  const addEmployeeQuestions = [
-    {
-      name:"first_name",
-      type: "input",
-      message:"What is the Employees first name?"
-    },
-    {
-      name:"last_name",
-      type: "input",
-      message:"What is the Employees last name?"
-    },
-    {
-      name:"role_id",
-      type: "number",
-      message:"What is the Employees Role ID?"
-    },
-    {
-      name:"manager_id",
-      type: "number",
-      message:"What is the Employees Manager ID?"
-    }
-  ]  
-
-  const removeEmployeeQuestions = [
-    {
-      name:"first_name",
-      type: "input",
-      message:"What is the first name of the Employee you would like to remove?"
-    },
-    {
-      name:"last_name",
-      type: "input",
-      message:"What is the last name of the Employee you would like to remove?"
-    }
-  ]
 
   function viewAllEmployees(){
     console.log(`Please wait your employee list is being generated...`)
@@ -184,13 +125,34 @@ function start() {
     })
   }
 
-  function viewbyManager() {
+  // function viewbyManager() {
     
-  }
+  // }
 
   function addEmployee() {
     inquirer
-      .prompt(addEmployeeQuestions)
+      .prompt([
+        {
+          name:"first_name",
+          type: "input",
+          message:"What is the Employees first name?"
+        },
+        {
+          name:"last_name",
+          type: "input",
+          message:"What is the Employees last name?"
+        },
+        {
+          name:"role_id",
+          type: "number",
+          message:"What is the Employees Role ID?"
+        },
+        {
+          name:"manager_id",
+          type: "number",
+          message:"What is the Employees Manager ID?"
+        }
+      ])
   
       .then(function(answer) {
         if (answer.add_role !== ''){
@@ -233,7 +195,23 @@ function start() {
 
   function addRole() {
     inquirer
-      .prompt(roleQuestions)
+      .prompt([
+        {
+          name:"role_title",
+          type: "input",
+          message: "What is the title of the role you would like to add?"
+        },
+        {
+          name:"role_salary",
+          type: "number",
+          message: "What is the salary for this role?"
+        },
+        {
+          name:"department_id",
+          type: "number",
+          message: "What is the department Id for this role?"
+        }
+      ] )
   
       .then(function(answer) {
         if (answer.add_role !== ''){
@@ -253,7 +231,18 @@ function start() {
 
   function removeEmployee() {
     inquirer
-      .prompt(removeEmployeeQuestions)
+      .prompt([
+        {
+          name:"first_name",
+          type: "input",
+          message:"What is the first name of the Employee you would like to remove?"
+        },
+        {
+          name:"last_name",
+          type: "input",
+          message:"What is the last name of the Employee you would like to remove?"
+        }
+      ])
       
       .then (function(answer) { 
         console.log(`Deleting ${answer.first_name} ${answer.last_name} from the Employee database`)
@@ -275,7 +264,6 @@ function start() {
           connection.query(`DELETE FROM employee_tracker_db.department WHERE name = "${answer.remove_department};`, function(err){
             if (err) throw err
             console.log(`Removing ${answer.remove_department} into the Department database`)
-            let departments = departments.filter(a => a !== `'${answer.remove_department}'`)
             start()
           })
         } else {
