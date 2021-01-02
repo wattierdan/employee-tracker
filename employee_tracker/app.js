@@ -31,9 +31,9 @@ connection.connect(function(err) {
               "Add Employee",
               "Add Department",
               "Add Role",
-              //"Remove Employee", 
-              //"Remove Department",
-              //"Remove Role",
+              "Remove Employee", 
+              "Remove Department",
+              "Remove Role",
               "Update Employee Role", 
               //"Update Employee Manager",
               "----Exit----"
@@ -69,17 +69,17 @@ connection.connect(function(err) {
                 addRole()
                 break
 
-              // case "Remove Employee":
-              //   removeEmployee()
-              //   break
+              case "Remove Employee":
+                removeEmployee()
+                break
               
-              // case"Remove Department":
-              //   removeDepartment()
-              //   break
+              case"Remove Department":
+                removeDepartment()
+                break
 
-              // case "Remove Role":
-              //   removeRole()
-              //   break
+              case "Remove Role":
+                removeRole()
+                break
 
               case "Update Employee Role":
                 updateEmployeeRole()
@@ -268,7 +268,7 @@ connection.connect(function(err) {
       
       .then(function(answer) {
         if (answer.remove_department !== ''){
-          connection.query(`DELETE FROM employee_tracker_db.department WHERE name = "${answer.remove_department};`, function(err){
+          connection.query(`DELETE FROM employee_tracker_db.department WHERE name = "${answer.remove_department}";`, function(err){
             if (err) throw err
             console.log(`Removing ${answer.remove_department} into the Department database`)
             start()
@@ -281,7 +281,24 @@ connection.connect(function(err) {
   }
 
   function removeRole() {
-
+    inquirer
+      .prompt({
+        name:"remove_role",
+        type: "input",
+        message: "What is the title of the role you would like to remove?"
+      })
+      .then(function(answer) {
+        if (answer.remove_role !== ''){
+          connection.query(`DELETE FROM employee_tracker_db.role WHERE title = "${answer.remove_role}";`, function(err){
+            if (err) throw err
+            console.log(`Removing ${answer.remove_role} from the database`)
+            start()
+          })
+        } else {
+            console.log('Please enter a valid Role title.')
+            removeDepartment()
+        }
+      })
   }
 
   function updateEmployeeRole() {
