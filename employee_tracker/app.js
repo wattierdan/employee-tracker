@@ -101,7 +101,15 @@ connection.connect(function(err) {
   function viewAllEmployees(){
     console.log(`Please wait your employee list is being generated...`)
       connection.query(
-          `SELECT * FROM employee_tracker_db.employee `, function(err,res){
+          `SELECT employee.id AS ID, 
+          CONCAT(employee.first_name, ' ' ,employee.last_name) AS 'Employee Name', 
+          role.title AS Title, 
+          department.name AS Department, 
+          role.salary AS Salary, 
+          CONCAT(mgr.first_name, ' ' ,mgr.last_name) AS Manager FROM employee 
+          INNER JOIN role on role.id = employee.role_id 
+          INNER JOIN department on department.id = role.department_id left join employee mgr on employee.manager_id = mgr.id
+          ORDER by employee.last_name`, function(err,res){
                   if (err) throw err
                   console.table(res)
       })       
@@ -109,7 +117,7 @@ connection.connect(function(err) {
   }
 
   function viewDepartments(){
-    connection.query(`SELECT * FROM employee_tracker_db.department;`, function(err,res){
+    connection.query(`SELECT department.id AS ID, department.name AS Department FROM department;`, function(err,res){
       if (err) throw err;
       console.table(res);
       start()
@@ -117,7 +125,7 @@ connection.connect(function(err) {
   }
 
   function viewRole() {
-    connection.query(`SELECT * FROM employee_tracker_db.role;`, function(err,res){
+    connection.query(`SELECT role.id AS ID, role.title AS Title, role.salary AS Salary FROM role;`, function(err,res){
       if (err) throw err;
       console.table(res);
       start()
@@ -282,7 +290,7 @@ connection.connect(function(err) {
         {
           name:"first_name",
           type: "input",
-          message: "What is the first name of the Employee you would like to update?"
+          message: "What is the first name of the Employee you woulsd like to update?"
         },
         {
           name:"last_name",
