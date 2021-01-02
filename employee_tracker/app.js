@@ -24,10 +24,10 @@ connection.connect(function(err) {
           type: "list",
           message: "What would you like to do?",
           choices: [
-              "View All Employees", 
+              "View All Employees by Name", 
+              "View All Employees by Manager",
               "View All Departments", 
               "View All Roles",
-              //"View All Employees by Manager",
               "Add Employee",
               "Add Department",
               "Add Role",
@@ -41,8 +41,12 @@ connection.connect(function(err) {
         })
         .then(function(answer) {
           switch (answer.start){
-              case "View All Employees":
+              case "View All Employees by Name":
                 viewAllEmployees()
+                break
+
+              case "View All Employees by Manager":
+                viewbyManager()
                 break
 
               case "View All Departments":
@@ -52,10 +56,6 @@ connection.connect(function(err) {
               case "View All Roles":
                 viewRole()
                 break
-
-              // case "View All Employees by Manager":
-              //   viewbyManager()
-              //   break
 
               case "Add Employee":
                 addEmployee()
@@ -117,7 +117,8 @@ connection.connect(function(err) {
   }
 
   function viewDepartments(){
-    connection.query(`SELECT department.id AS ID, department.name AS Department FROM department;`, function(err,res){
+    console.log(`Please wait a list of Departments is being generated...`)
+    connection.query(`SELECT department.id AS ID, name AS Department FROM department`, function(err,res){
       if (err) throw err;
       console.table(res);
       start()
@@ -125,16 +126,31 @@ connection.connect(function(err) {
   }
 
   function viewRole() {
-    connection.query(`SELECT role.id AS ID, role.title AS Title, role.salary AS Salary FROM role;`, function(err,res){
+    console.log(`Please wait a list of Roles is being generated...`)
+    connection.query(`SELECT role.id AS ID, title AS Title, salary AS Salary, name AS Department FROM role LEFT JOIN department on role.department_id = department.id;`, function(err,res){
       if (err) throw err;
       console.table(res);
       start()
     })
   }
 
-  // function viewbyManager() {
-    
-  // }
+  function viewbyManager() {
+    console.log(`Please wait your employee list is being generated...`)
+    connection.query(
+      `SELECT employee.id AS ID, 
+      CONCAT(employee.first_name, ' ' ,employee.last_name) AS 'Employee Name', 
+      role.title AS Title, 
+      department.name AS Department, 
+      role.salary AS Salary, 
+      CONCAT(mgr.first_name, ' ' ,mgr.last_name) AS Manager FROM employee 
+      INNER JOIN role on role.id = employee.role_id 
+      INNER JOIN department on department.id = role.department_id left join employee mgr on employee.manager_id = mgr.id
+      ORDER by mgr.last_name`, function(err,res){
+              if (err) throw err
+              console.table(res)
+              start()
+  })
+  }
 
   function addEmployee() {
     inquirer
@@ -166,7 +182,7 @@ connection.connect(function(err) {
           connection.query(`INSERT INTO employee_tracker_db.employee (first_name, last_name, role_id, manager_id)
           VALUES ("${answer.first_name}","${answer.last_name}",${answer.role_id},${answer.manager_id})`, function(err){
             if (err) throw err
-            console.log(`adding ${answer.first_name} ${answer.last_name} into Role database`)
+            console.log(`adding ${answer.first_name} ${answer.last_name} into database...`)
             start()
           })
         } else {
@@ -189,7 +205,7 @@ connection.connect(function(err) {
           connection.query(`INSERT INTO employee_tracker_db.department (name)
           VALUES ("${answer.add_department}")`, function(err){
             if (err) throw err
-            console.log(`adding ${answer.add_department} into department database`)
+            console.log(`adding ${answer.add_department} into database...`)
             departments.push(answer.add_department)
             start()
           })
@@ -225,7 +241,7 @@ connection.connect(function(err) {
           connection.query(`INSERT INTO employee_tracker_db.role (title, salary, department_id)
           VALUES ("${answer.role_title}",${answer.role_salary},${answer.department_id})`, function(err){
             if (err) throw err
-            console.log(`adding ${answer.role_title} into Role database`)
+            console.log(`adding ${answer.role_title} into database...`)
             roles.push(answer.role_title)
             start()
           })
