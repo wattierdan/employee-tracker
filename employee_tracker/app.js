@@ -90,7 +90,7 @@ connection.connect(function(err) {
               //   break
 
               case "----Exit----":
-                console.log("Goodbye...")
+                console.log("Goodbye, thank you for using the Employee Tracker...")
                 connection.end()
                 break
           }
